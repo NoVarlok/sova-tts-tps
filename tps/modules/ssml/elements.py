@@ -12,14 +12,11 @@ class Text:
         self.rate = parse_rate(rate)
         self.volume = parse_volume(volume)
 
-
     def __str__(self):
         return self.value
 
-
     def update_value(self, new_text):
         self.value = new_text
-
 
     def update_prosody(self, **kwargs):
         for key, value in kwargs.items():
@@ -28,13 +25,11 @@ class Text:
             value = _prosodies_parsers[key](value)
             self.__setattr__(key, value)
 
-
     def __add__(self, other):
         text = self.value + other.value
         instance = Text(text).inherit(self)
 
         return instance
-
 
     def inherit(self, instance):
         self.pitch = instance.pitch
@@ -42,7 +37,6 @@ class Text:
         self.volume = instance.volume
 
         return self
-
 
     @property
     def is_empty(self):
@@ -55,44 +49,35 @@ class Pause:
         self.type = type_
         self.milliseconds = parse_duration(time if time is not None else strength)
 
-
     def __str__(self):
         return "<Pause.{}: {}ms>".format(self.type, self.milliseconds)
-
 
     @property
     def seconds(self):
         return self.milliseconds / 1000
 
-
     def samples(self, samplerate):
         return int(self.seconds * samplerate)
-
 
     @classmethod
     def paragraph(cls):
         return Pause(time=750, type_="paragraph")
 
-
     @classmethod
     def eos(cls):
         return Pause(time=500, type_="eos")
-
 
     @classmethod
     def semicolon(cls):
         return Pause(time=250, type_="semicolon")
 
-
     @classmethod
     def colon(cls):
         return Pause(time=150, type_="colon")
 
-
     @classmethod
     def comma(cls):
         return Pause(time=100, type_="comma")
-
 
     @classmethod
     def space(cls):
@@ -142,10 +127,10 @@ _pitch_map = {
 def parse_pitch(value: Union[str, float, int]) -> float:
     if isinstance(value, str):
         if value.endswith("%"):
-            factor = float(value.replace("%", "")) # -15.2%
+            factor = float(value.replace("%", ""))  # -15.2%
             factor = 1 + factor / 100
         elif value.endswith("st"):
-            factor = float(value.replace("st", "")) # 0.5st
+            factor = float(value.replace("st", ""))  # 0.5st
             factor = (2 ** (factor / 12))
         elif value in _pitch_map:
             factor = _pitch_map[value]
@@ -172,7 +157,7 @@ _rate_map = {
 def parse_rate(value: Union[str, float, int]) -> float:
     if isinstance(value, str):
         if value.endswith("%"):
-            factor = float(value.replace("%", "")) # -15.2%
+            factor = float(value.replace("%", ""))  # -15.2%
             factor = 1 + factor / 100
         elif value in _rate_map:
             factor = _rate_map[value]
@@ -199,7 +184,7 @@ _volume_map = {
 def parse_volume(value: Union[str, int, float]) -> Union[int, float]:
     if isinstance(value, str):
         if value.endswith("dB"):
-            factor = float(value.replace("dB", "")) # -6.0dB
+            factor = float(value.replace("dB", ""))  # -6.0dB
         elif value in _volume_map:
             factor = _volume_map[value]
         else:
@@ -217,3 +202,20 @@ _prosodies_parsers = {
     "rate": parse_rate,
     "volume": parse_volume
 }
+
+
+class Audio:
+    def __init__(self, src, **kwargs):
+        self.src = src
+
+    def __str__(self):
+        return f'<Audio src={self.src}>'
+
+
+class SayAs:
+    def __init__(self, interpret_as, text):
+        self.interpret_as = interpret_as
+        self.text = text
+
+    def __str__(self):
+        return f'<Say-As interpret-as={self.interpret_as}, text={self.text}>'
