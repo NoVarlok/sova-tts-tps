@@ -87,6 +87,9 @@ def _walk_ssml_elem(elem, ancestor=None):
     else:
         raise KeyError
 
+    if elem.tag in [SSMLTag.say_as, SSMLTag.audio] and ancestor is not None:
+        sequence[-1].inherit(ancestor)
+
     if not body.is_empty and elem.tag not in [SSMLTag.say_as, SSMLTag.audio]:
         sequence.append(body)
 

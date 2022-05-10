@@ -32,9 +32,9 @@ class Text:
         return instance
 
     def inherit(self, instance):
-        self.pitch = instance.pitch
-        self.rate = instance.rate
-        self.volume = instance.volume
+        self.pitch *= instance.pitch
+        self.rate *= instance.rate
+        self.volume *= instance.volume
 
         return self
 
@@ -207,15 +207,33 @@ _prosodies_parsers = {
 class Audio:
     def __init__(self, src, **kwargs):
         self.src = src
+        self.pitch = 1.0
+        self.rate = 1.0
+        self.volume = 1.0
 
     def __str__(self):
         return f'<Audio src={self.src}>'
+
+    def inherit(self, instance):
+        self.pitch *= instance.pitch
+        self.rate *= instance.rate
+        self.volume *= instance.volume
+        return self
 
 
 class SayAs:
     def __init__(self, interpret_as, text):
         self.interpret_as = interpret_as
         self.text = text
+        self.pitch = 1.0
+        self.rate = 1.0
+        self.volume = 1.0
 
     def __str__(self):
         return f'<Say-As interpret-as={self.interpret_as}, text={self.text}>'
+
+    def inherit(self, instance):
+        self.pitch *= instance.pitch
+        self.rate *= instance.rate
+        self.volume *= instance.volume
+        return self
